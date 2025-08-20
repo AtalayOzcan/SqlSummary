@@ -1,0 +1,101 @@
+##SQL nedir?
+SQL, Yapılandırılmış Sorgu Dili anlamına gelir
+SQL, veritabanlarına erişmenizi ve bunları yönetmenizi sağlar
+SQL, 1986 yılında Amerikan Ulusal Standartlar Enstitüsü'nün (ANSI) ve 1987 yılında Uluslararası Standardizasyon Örgütü'nün (ISO) standardı haline geldi
+
+SQL Ne Yapabilir?
+SQL, bir veritabanına karşı sorguları çalıştırabilir
+SQL bir veritabanından veri alabilir
+SQL bir veritabanına kayıt ekleyebilir
+SQL, bir veritabanındaki kayıtları güncelleyebilir
+SQL bir veritabanından kayıtları silebilir
+SQL yeni veritabanları oluşturabilir
+SQL bir veritabanında yeni tablolar oluşturabilir
+SQL, bir veritabanında saklı yordamlar oluşturabilir
+SQL bir veritabanında görünümler oluşturabilir
+SQL, tablolar, prosedürler ve görünümler üzerinde izinler ayarlayabilir
+
+SQL bir Standarttır - AMA....
+SQL bir ANSI/ISO standardı olmasına rağmen SQL dilinin farklı versiyonları bulunmaktadır.
+Ancak ANSI standardına uyumlu olmak için hepsi en azından başlıca komutları (örneğin SELECT, UPDATE, , DELETE) benzer şekilde destekler.INSERT WHERE
+
+Not: SQL veritabanı programlarının çoğunun, SQL standardına ek olarak kendi tescilli uzantıları da vardır!
+
+Web Sitenizde SQL Kullanımı
+Bir veritabanından veri gösteren bir web sitesi oluşturmak için şunlara ihtiyacınız olacak:
+
+Bir RDBMS veritabanı programı (örneğin MS Access, SQL Server, MySQL)
+PHP veya ASP gibi sunucu taraflı bir betik dili kullanmak için
+İstediğiniz verileri almak için SQL kullanmak
+Sayfayı biçimlendirmek için HTML/CSS kullanmak
+
+##RDBMS
+RDBMS, İlişkisel Veritabanı Yönetim Sistemi anlamına gelir.
+RDBMS, SQL'in ve MS SQL Server, IBM DB2, Oracle, MySQL ve Microsoft Access gibi tüm modern veritabanı sistemlerinin temelini oluşturur.
+İlişkisel ve ilişkisel veritabanı yönetim sistemlerinde (RDBMS) veriler, tablo adı verilen veritabanı nesnelerinde saklanır. Tablo, ilişkili veri girişlerinin bir koleksiyonudur ve sütunlar ile satırlardan oluşur.
+
+##SQL Sözdizimi
+##SQL İfadeleri
+Bir veritabanında yapmanız gereken işlemlerin çoğu SQL ifadeleriyle yapılır.
+SQL ifadeleri anlaşılması kolay anahtar sözcüklerden oluşur.
+
+Veritabanı Tabloları
+Bir veritabanı genellikle bir veya daha fazla tablo içerir. Her tablo bir adla (örneğin "Müşteriler" veya "Siparişler") tanımlanır ve veri içeren kayıtlar (satırlar) içerir.
+
+Unutmayın ki...
+SQL anahtar sözcükleri büyük/küçük harfe duyarlı DEĞİLDİR: selectaynıdır SELECT
+Bu eğitimde tüm SQL anahtar kelimelerini büyük harfle yazacağız.
+
+SQL İfadelerinden Sonra Noktalı Virgül?
+Bazı veritabanı sistemleri her SQL ifadesinin sonunda noktalı virgül kullanılmasını gerektirir.
+
+Noktalı virgül, sunucuya aynı çağrıda birden fazla SQL ifadesinin yürütülmesine izin veren veritabanı sistemlerinde her SQL ifadesini ayırmanın standart yoludur.
+Bu eğitimde her SQL ifadesinin sonunda noktalı virgül kullanacağız.
+
+***En Önemli SQL Komutlarından Bazıları***
+SELECT- bir veritabanından veri çıkarır
+UPDATE- bir veritabanındaki verileri günceller
+DELETE- veritabanından veri siler
+INSERT INTO- veritabanına yeni veriler ekler
+CREATE DATABASE- yeni bir veritabanı oluşturur
+ALTER DATABASE- bir veritabanını değiştirir
+CREATE TABLE- yeni bir tablo oluşturur
+ALTER TABLE- bir tabloyu değiştirir
+DROP TABLE- bir tabloyu siler
+CREATE INDEX- bir dizin (arama anahtarı) oluşturur
+DROP INDEX- bir dizini siler
+
+SQL SELECT İfadesi
+Bu SELECT ifade bir veritabanından veri seçmek için kullanılır.
+Örnek:
+Müşteriler tablosundan veri döndür:
+SELECT CustomerName, City FROM Customers;
+
+SELECT column1, column2, ...FROM table_name; -->> SELECT CustomerID,CustomerName,Address FROM Customers;
+Burada, column1, column2, ... veri seçmek istediğiniz tablonun alan adlarıdır .
+table_name, veri seçmek istediğiniz tablonun adını temsil eder.
+----
+SQL SELECT DISTINCT İfadesi
+Bu SELECT DISTINCTifade yalnızca farklı (distributed) değerleri döndürmek için kullanılır.
+SELECT DISTINCT column1, column2, ... FROM table_name;   Örnek: SELECT DISTINCT Country FROM Customers;
+Ayrı Sayım
+DISTINCT Anahtar kelimeyi adlı bir fonksiyonda kullanarak COUNT farklı ülkelerin sayısını döndürebiliriz.
+Örnek
+SELECT COUNT(DISTINCT Country) FROM Customers;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
