@@ -1,0 +1,265 @@
+ORM NEDİR?
+ORM SQL SORGULARINI C# DİLİNDE YAZIP ARKA PLANDA BU KODUN SQL'E DÖNÜŞMESİDİR.
+ORM (Object-Relational Mapping), yazılım geliştirmede kullanılan bir tekniktir. Amaç, nesne tabanlı programlama dilleri (C#, Java, Python gibi) ile ilişkisel veritabanları (SQL Server, PostgreSQL, MySQL vb.) arasındaki veri etkileşimini kolaylaştırmaktır.
+Daha basit anlatırsak:
+Normalde veritabanıyla konuşmak için SQL sorguları yazman gerekir.
+ORM sayesinde tablo, sütun, ilişki gibi kavramlar sınıflar ve nesneler olarak kodunda temsil edilir.
+Sen SQL sorgusu yazmak yerine nesnelerle çalışırsın, ORM arka planda bunu SQL’e dönüştürür.
+
+ORM = SQL yazmadan veritabanıyla nesne tabanlı şekilde konuşmanı sağlayan yapı.
+
+EF CORE NEDİR?
+Entity Framework Core Microsoft'un geliştirdiği açık kaynaklı bir ORM aracıdır.
+SEN LINQ SORGULARI YAZARSIN EF CORE SENİN İÇİN BUNU ARKA PLANDA SQL SORGULARINA ÇEVİRİR.
+AYRICA MSSQL,POSTRESQL,SQLİTE GİBİ BİRÇOK DATABASE İLE BİRLİKTE KULLANILABİLİR.
+
+[C# Code]  
+var users = db.Users
+              .Where(u => u.Name == "Atalay")
+              .ToList();
+
+       │  (LINQ Query)
+       ▼
+[EF Core]  →  LINQ sorgusunu SQL’e dönüştürür
+       │
+       ▼
+[SQL]  
+SELECT * FROM Users WHERE Name = 'Atalay';
+
+       │
+       ▼
+[Database]  
+Users tablosundan sonuçları döner
+
+C# Kod → EF Core → SQL → Database → Sonuç (Class Nesneleri)
+
+PRİMARY KEY AND FOREİGN KEY NEDİR?
+-PRİMARY KEY:BİRİNCİL ANAHTAR
+Bir tablodaki her satırı benzersiz (unique) şekilde tanımlayan sütundur (veya sütunlar grubudur).
+Tekrarlanamaz ve NULL olamaz.
+Genelde “Id” sütunu Primary Key olarak kullanılır.
+
+| Id (PK) | Name   | Email                                     |
+| ------- | ------ | ----------------------------------------- |
+| 1       | Ali    | [ali@mail.com](mailto:ali@mail.com)       |
+| 2       | Ayşe   | [ayse@mail.com](mailto:ayse@mail.com)     |
+| 3       | Atalay | [atalay@mail.com](mailto:atalay@mail.com) |
+
+-FOREIGN KEY:YABANCI ANAHTAR
+Bir tablodaki sütunun, başka bir tablodaki Primary Key’e referans vermesidir.
+Tablolar arasında ilişki kurmayı sağlar.
+
+| OrderId (PK) | UserId (FK) | Product |
+| ------------ | ----------- | ------- |
+| 101          | 1           | Laptop  |
+| 102          | 2           | Telefon |
+| 103          | 1           | Klavye  |
+UserId sütunu Foreign Key’dir.
+Bu sütun, Users tablosundaki Id (Primary Key)’e referans verir.
+Böylece hangi siparişin hangi kullanıcıya ait olduğu bilinir.
+MESELA ID=1 ADLI KULLANICI ORDERS KISMINDA USERID = 1 OLARAK HEM LAPTOP HEM KLAVYE ALMIŞ.
+
+Primary Key → Tablo içindeki benzersiz satırı tanımlar.
+Foreign Key → Başka bir tablonun Primary Key’ine bağlanır.
+
+Veritabanı İlişkileri
+İlişkiler, tabloların Primary Key (PK) ve Foreign Key (FK) üzerinden kurduğu bağlardır.
+3 temel ilişki vardır:
+
+1. One-to-One (Bire Bir İlişki)
+Tanım: Bir tablodaki her kayıt, diğer tablodaki yalnızca bir kayıt ile eşleşir.
+Gerçek Hayat Örneği:
+Bir kişinin TC Kimlik Numarası sadece tek kişiye aittir.
+Aynı şekilde o kişinin de sadece tek kimliği vardır.
+
+| UserId (PK) | Name   |
+| ----------- | ------ |
+| 1           | Atalay |
+| 2           | Ayşe   |      Burada UserProfiles.ProfileId aynı zamanda Users.UserId’ye Foreign Key olarak bağlı.
+                              Yani her kullanıcıya 1 profil, her profile 1 kullanıcı düşüyor.
+| ProfileId (PK, FK) | Address  | Phone    |
+| ------------------ | -------- | -------- |
+| 1                  | Ankara   | 555-1111 |
+| 2                  | İstanbul | 555-2222 |
+
+2. One-to-Many (Bire Çok İlişki)
+Tanım: Bir tablodaki bir kayıt, diğer tablodaki birden fazla kayıtla eşleşebilir.
+Gerçek Hayat Örneği:
+Bir müşteri birçok sipariş verebilir.
+Ama her sipariş sadece bir müşteriye aittir.
+
+| UserId (PK) | Name   |
+| ----------- | ------ |
+| 1           | Atalay |
+| 2           | Ayşe   |  Orders.UserId, Users.UserId’ye bağlıdır.
+                          Atalay’ın 2 siparişi var.
+                          Ayşe’nin 1 siparişi var.
+                          Bu yüzden ilişki 1 Kullanıcı – Çok Sipariş şeklindedir.
+| OrderId (PK) | UserId (FK) | Product |
+| ------------ | ----------- | ------- |
+| 101          | 1           | Laptop  |
+| 102          | 1           | Klavye  |
+| 103          | 2           | Telefon |
+
+3. Many-to-Many (Çoktan Çoğa İlişki)
+Tanım: Bir tablodaki bir kayıt, diğer tablodaki birden fazla kayıtla eşleşebilir.
+Aynı şekilde karşı tablodaki bir kayıt da birden fazla ile eşleşebilir.
+Bu ilişkiyi kurmak için ara tablo (junction table) gerekir.
+
+Gerçek Hayat Örneği:
+Bir öğrenci birden fazla derse kayıt olabilir.
+Aynı zamanda bir dersin de birden fazla öğrencisi olabilir.
+
+| StudentId (PK) | Name   |
+| -------------- | ------ |
+| 1              | Atalay |
+| 2              | Ayşe   |
+
+| CourseId (PK) | CourseName |
+| ------------- | ---------- |
+| 10            | Matematik  |
+| 20            | Yazılım    |
+
+| StudentId (FK) | CourseId (FK) |  ARA TABLO (JUNCTION TABLE)
+| -------------- | ------------- |
+| 1              | 10            |  Atalay hem Matematik hem Yazılım dersi alıyor. Ayşe sadece Yazılım dersi alıyor.
+| 1              | 20            |
+| 2              | 20            |
+
+Normalization (Normalizasyon) Nedir?
+Normalizasyon, veritabanındaki verileri düzenleme sürecidir.
+Amaç:
+Gereksiz tekrarları (redundancy) azaltmak
+Veri tutarlılığını (consistency) artırmak
+Tablolar arası ilişkileri mantıklı kurmak
+Yani bir veriyi sadece bir yerde saklamak ve tekrarını önlemek.
+
+Neden Normalizasyon Yapılır?
+Veritabanında aynı bilgiyi tekrar tekrar tutarsan:
+Disk alanı boşa harcanır.
+Veri güncellendiğinde hatalar çıkar (bir yerde güncelleyip diğer yerde unutabilirsin). Karmaşa olur.
+Normalizasyon ile bunlar engellenir.
+
+Normalizasyon Aşamaları (Normal Forms)
+1. First Normal Form (1NF)
+Her sütunda sadece tekil değer olmalı. (Tekrarlayan gruplar olmayacak)
+Her satır benzersiz olmalı (Primary Key).
+
+Örnek (Yanlış tablo):
+| StudentId | Name | Courses            |
+| --------- | ---- | ------------------ |
+| 1         | Ali  | Matematik, Fizik   |
+| 2         | Ayşe | Yazılım, Matematik | ➡ Hatalı çünkü “Courses” sütununda birden fazla değer var.
+
+📍 Doğru tablo (1NF’ye uygun):
+| StudentId | Name |
+| --------- | ---- |
+| 1         | Ali  |
+| 2         | Ayşe |
+
+| StudentId | Course    |
+| --------- | --------- |
+| 1         | Matematik |
+| 1         | Fizik     |
+| 2         | Yazılım   |
+| 2         | Matematik |
+
+2. Second Normal Form (2NF)
+Önce 1NF sağlanmalı.
+Sonra tüm alanlar tamamen Primary Key’e bağlı olmalı.
+Örnek (Yanlış tablo):
+| StudentId | CourseId | StudentName |
+| --------- | -------- | ----------- |
+| 1         | 101      | Ali         |
+| 1         | 102      | Ali         | ➡ Hatalı çünkü “StudentName” aslında sadece StudentId’ye bağlıdır, CourseId ile ilgisi yoktur.
+
+Doğru çözüm:
+Students (StudentId, StudentName)
+Courses (CourseId, CourseName)
+StudentCourses (StudentId, CourseId)
+
+3. Third Normal Form (3NF)
+Önce 2NF sağlanmalı.
+Sonra tüm sütunlar yalnızca Primary Key’e bağlı olmalı, başka sütunlara değil.
+Örnek (Yanlış tablo):
+| OrderId | CustomerId | CustomerName |
+| ------- | ---------- | ------------ |
+| 1001    | 1          | Ali          |
+Doğru çözüm:
+Customers (CustomerId, CustomerName)
+Orders (OrderId, CustomerId)
+
+Özet
+1NF → Tabloda tekrar eden gruplar olmasın. (Her hücrede tek değer)
+2NF → Sütunlar sadece Primary Key’in tamamına bağlı olsun.
+3NF → Sütunlar sadece Primary Key’e bağlı olsun, başka sütunlara değil.
+
+👉 Normalizasyonun mantığı şu:
+“Veriyi en küçük, en bağımsız ve en anlamlı parçalar halinde sakla.”
+
+
+Constraints (Kısıtlamalar) Nedir?
+Constraint, veritabanındaki tablolar üzerinde kurallar koyarak veri bütünlüğünü (data integrity) sağlamaktır.
+Yani tabloya yanlış / hatalı / mantıksız verilerin girilmesini engeller.
+Örneğin: “Bir ürünün fiyatı eksi olamaz” veya “Bir siparişin müşterisi olmayan bir kişi olamaz” gibi kuralları uygulatır.
+
+Başlıca Constraint Türleri
+1. PRIMARY KEY
+Her satırı benzersiz (unique) şekilde tanımlar.
+NULL değer alamaz.
+Bir tabloda yalnızca bir tane Primary Key olabilir (ama bu birden fazla kolondan oluşabilir = composite key).
+
+CREATE TABLE Users (
+    UserId INT PRIMARY KEY,
+    Name NVARCHAR(50)
+);
+
+
+2. FOREIGN KEY
+Bir tablodaki sütunun, başka bir tablodaki Primary Key’e referans vermesini sağlar.
+Tablolar arası ilişki kurmak için kullanılır.
+CREATE TABLE Orders (
+    OrderId INT PRIMARY KEY,
+    UserId INT FOREIGN KEY REFERENCES Users(UserId)
+);
+
+3. UNIQUE
+Bir sütundaki değerlerin tekrarlanmamasını sağlar.
+Bir tabloda birden fazla UNIQUE constraint olabilir.
+CREATE TABLE Products (
+    ProductId INT PRIMARY KEY,
+    ProductName NVARCHAR(100) UNIQUE
+);
+
+4.NOT NULL
+Bir sütunun boş (NULL) değer almasını engeller.
+CREATE TABLE Customers (
+    CustomerId INT PRIMARY KEY,
+    Name NVARCHAR(50) NOT NULL,
+    Email NVARCHAR(100) NOT NULL
+);
+
+5. CHECK
+Bir sütun için özel bir koşul tanımlar.
+Örneğin: yaş 0’dan küçük olamaz.
+CREATE TABLE Employees (
+    EmployeeId INT PRIMARY KEY,
+    Age INT CHECK (Age >= 18)
+);
+
+6. DEFAULT
+Eğer kullanıcı değer vermezse, sütun için varsayılan değer atar.
+CREATE TABLE Orders (
+    OrderId INT PRIMARY KEY,
+    OrderDate DATETIME DEFAULT GETDATE()
+);
+Özet
+
+PRIMARY KEY → Satırları benzersiz tanımlar.
+FOREIGN KEY → Tablo ilişkisini kurar.
+UNIQUE → Tekrar eden veri olmaz.
+NOT NULL → Sütun boş geçilemez.
+CHECK → Özel kural uygular.
+DEFAULT → Varsayılan değer atar.
+
+Kısaca: Constraints = Veritabanına girilen verilerin doğru, tutarlı ve mantıklı olmasını sağlayan kurallar.
